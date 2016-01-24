@@ -51,6 +51,16 @@ public class BinaryTree<T> {
 		return this;
 
 	}
+	
+	public BinaryTree<T> getLeft()
+	{
+		return myLeft;
+	}
+	
+	public BinaryTree<T> getRight()
+	{
+		return myRight;
+	}
 
 	/**
 	 * Get the height of the tree
