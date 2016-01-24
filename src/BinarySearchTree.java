@@ -23,7 +23,7 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 	 * @return Child node
 	 */
 	protected BinaryTree<T> createElement(T value)
-	{ return new BinarySearchTree(value); }
+	{ return new BinarySearchTree<T>(value); }
 	
 
 
@@ -36,7 +36,7 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 	{
 		if(null == this.myLeft)
 		{
-			BinarySearchTree<T> newChild = (BinarySearchTree)createElement(value);
+			BinarySearchTree<T> newChild = (BinarySearchTree<T>)createElement(value);
 			newChild.setParent(this);
 			this.myLeft = newChild;
 		}
@@ -57,7 +57,7 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 	{
 		if(null == this.myRight)
 		{
-			BinarySearchTree<T> newChild = (BinarySearchTree)createElement(value);
+			BinarySearchTree<T> newChild = (BinarySearchTree<T>)createElement(value);
 			newChild.setParent(this);
 			this.myRight = newChild;
 		}
@@ -129,8 +129,8 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 		{
 			Boolean leftChild = parent.getLeft() == this;
 
-			uncle = leftChild ? (BinarySearchTree)parent.getRight() : 
-				(BinarySearchTree)parent.getLeft();
+			uncle = leftChild ? (BinarySearchTree<T>)parent.getRight() : 
+				(BinarySearchTree<T>)parent.getLeft();
 		}
 
 		return uncle;
