@@ -3,7 +3,7 @@ import org.json.JSONArray;
 public class DictionaryInsertThread implements Runnable {
 	
 	public DictionaryInsertThread(JSONArray data, int start, 
-			int end, BinarySearchTree<String> tree, int wordSize)
+			int end, AVLTree<String> tree, int wordSize)
 	{
 		if(end < start)
 		{
@@ -22,7 +22,6 @@ public class DictionaryInsertThread implements Runnable {
 	@Override
 	public void run() {
 		
-		int count = 0;
 		for(int index = myStartIndex; index < myEndIndex; ++index)
 		{
 			String insertData = myData.get(index).toString();
@@ -30,20 +29,16 @@ public class DictionaryInsertThread implements Runnable {
 			// Only add words we would end up using 
 			if(this.myMaxWordSize >= insertData.length())
 			{
-				++count;
 				insert(insertData);
 			}			
 		}
-		System.out.println("Added:  " + count);
-
-
 	}
 	
 	private void insert(String insertData)
 	{
 		try
 		{
-			myTree.insert(insertData);
+			myTree = (AVLTree<String>)(myTree.insert(insertData));
 		}
 		catch(Exception ex)
 		{
@@ -53,13 +48,18 @@ public class DictionaryInsertThread implements Runnable {
 		}
 	}
 	
+	public AVLTree<String> getTree()
+	{
+		return myTree;
+	}
+	
 	private JSONArray myData = null;
 	
 	private int myStartIndex = 0;
 	
 	private int myEndIndex = 0;
 	
-	private BinarySearchTree<String> myTree = null;
+	private AVLTree<String> myTree = null;
 	
 	private int myMaxWordSize = -1;
 

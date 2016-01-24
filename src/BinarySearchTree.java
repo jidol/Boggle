@@ -1,7 +1,7 @@
 import java.util.concurrent.Semaphore;
 import java.lang.InterruptedException;
 
-public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
+public class BinarySearchTree<T extends Comparable<T> > extends BinaryTree<T> {
 
 	public BinarySearchTree(T value)
 	{
