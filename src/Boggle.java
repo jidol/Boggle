@@ -15,6 +15,7 @@ public class Boggle {
 		try
 		{
 			boggle();
+
 		}
 		catch(Exception ex)
 		{
@@ -24,8 +25,8 @@ public class Boggle {
 	
 	public static void boggle()
 	{
-		int wordSize = 4;
-		BinarySearchTree<String> tree = getDictionary(wordSize);
+		int wordSize = 3;
+		BinarySearchTree<String> tree = getDictionary(wordSize*2-1);
 		Board playArea = new Board(wordSize);
 		playArea.roll();
 		playArea.printBoard();
@@ -97,18 +98,14 @@ public class Boggle {
 	{
 		int end = dictArray.length();
 		int half = (int)(end * 0.5);
-		BinarySearchTree<String> tree = new BinarySearchTree<String>(dictArray.get(half).toString());
-		int quarter = (int)(half *0.5);
-		Thread one = makeThreadFromRange(0, half, dictArray, tree, wordSize);
-		Thread two = makeThreadFromRange(half, end, dictArray, tree, wordSize);
+		AVLTree<String> tree = new AVLTree<String>(dictArray.get(half).toString());
+		Thread one = makeThreadFromRange(0, end, dictArray, tree, wordSize);
 		
 		one.start();
-		two.start();
 
 		try
 		{
 			one.join();
-			two.join();
 
 		}
 		catch(Exception ex)
@@ -120,7 +117,7 @@ public class Boggle {
 	}
 	
 	public static Thread makeThreadFromRange(int start, int end, JSONArray data, 
-			BinarySearchTree tree, int wordSize)
+			AVLTree<String> tree, int wordSize)
 	{
 		DictionaryInsertThread runnable = new DictionaryInsertThread(data, start, 
 				end, tree, wordSize);

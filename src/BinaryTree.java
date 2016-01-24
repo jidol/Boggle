@@ -4,7 +4,7 @@
  * @author Jeff Idol
  *
  */
-public class BinaryTree<T> {
+public class BinaryTree<T extends Comparable<T>> {
 
 	public BinaryTree(T value)
 	{
@@ -119,7 +119,7 @@ public class BinaryTree<T> {
 			return result;
 		}
 	}
-	
+
 	/**
 	 * Value of the Node
 	 */
