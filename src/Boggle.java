@@ -1,4 +1,5 @@
 
+
 public class Boggle {
 
 	/**
@@ -9,8 +10,22 @@ public class Boggle {
 		Board playArea = new Board(4);
 		playArea.roll();
 		playArea.printBoard();
+		
+		// Print substrings for now 
 		for(String e: playArea.getAllSubstrings())
 			System.out.println(e);
+	}
+	
+	/**
+	 * Use spell checker here from outside library
+	 * @param word Word to check
+	 * @return True if spelled correctly otherwise false
+	 */
+	public static boolean checkSpelling(String word)
+	{
+		
+		 
+		 return false;
 	}
 
 }
