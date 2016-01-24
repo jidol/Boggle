@@ -1,3 +1,5 @@
+import java.util.concurrent.Semaphore;
+import java.lang.InterruptedException;
 
 public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 
@@ -26,49 +28,7 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 	{ return new BinarySearchTree<T>(value); }
 	
 
-
-	/**
-	 * Insert into the left child
-	 * @param value Value to insert in the left child
-	 * @return Tree result of inserting into left child
-	 */
-	protected BinarySearchTree<T> insertLeft(T value)
-	{
-		if(null == this.myLeft)
-		{
-			BinarySearchTree<T> newChild = (BinarySearchTree<T>)createElement(value);
-			newChild.setParent(this);
-			this.myLeft = newChild;
-		}
-		else
-		{
-			this.myLeft.insert(value);
-		}
-		return this;
-
-	}
-
-	/**
-	 * Insert value into right child
-	 * @param value Value to insert in the right child
-	 * @return Tree result of inserting value into right child
-	 */
-	protected BinarySearchTree<T> insertRight(T value)
-	{
-		if(null == this.myRight)
-		{
-			BinarySearchTree<T> newChild = (BinarySearchTree<T>)createElement(value);
-			newChild.setParent(this);
-			this.myRight = newChild;
-		}
-		else
-		{
-			this.myRight.insert(value);
-		}
-
-		return this;
-
-	}
+	
 
 	/**
 	 * Insert value into the tree's children
@@ -78,16 +38,48 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 	 * @param value Value to insert
 	 * @return
 	 */
-	public BinaryTree<T> insert(T value)
+	public BinaryTree<T> insert(T value) throws InterruptedException
 	{
-	    if(myValue.compareTo(value) < 0)
+		BinarySearchTree<T> node = this;
+		do
 		{
-			return insertRight(value);
-		}
-		else
-		{
-			return insertLeft(value);
-		}
+			Semaphore lock = node.getLock();
+
+			lock.acquire();
+			
+			T cValue = node.getValue();
+
+		    if(cValue.compareTo(value) < 0)
+			{
+				if(node.getLeft() != null)
+				{
+					lock.release();
+					node = (BinarySearchTree<T>)node.getLeft();
+				}
+				else
+				{
+					node.setLeft(createElement(value));
+					((BinarySearchTree)node.getLeft()).setParent(this);
+					lock.release();
+					return this;
+				}
+			}
+			else
+			{
+				if(node.getRight() != null)
+				{
+					lock.release();
+					node = (BinarySearchTree<T>)node.getRight();
+				}
+				else
+				{
+					node.setRight(createElement(value));
+					((BinarySearchTree)node.getRight()).setParent(this);
+					lock.release();
+					return this;
+				}			
+			}
+		} while(true);
 	}
 
 	/**
@@ -95,25 +87,44 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 	 * @param value Value to locate
 	 * @return Tree with the value otherwise null
 	 */
-	public BinaryTree<T> findNodeByValue(T value)
+	public BinaryTree<T> findNodeByValue(T value) throws InterruptedException
 	{
-		if(value.compareTo(myValue) == 0)
-		{
-			return this;
-		}
-		else
-		{
-			if(value.compareTo(myValue) < 0 && null != myLeft)
-			{
-				return this.myLeft.findNodeByValue(value);
-			}
-			else if(value.compareTo(myValue) > 0 && null != myRight)
-			{
-				return this.myRight.findNodeByValue(value);
-			}
+		BinarySearchTree<T> node = this;
+		Semaphore lock = null;
 
+		do
+		{
+			if(null == node)
+				return node;
+			
+			lock = node.getLock();
+			lock.acquire();
+			T cValue = node.getValue();
+			if(cValue.compareTo(value) == 0)
+			{
+				lock.release();
+				return node;
+			}
+			if(cValue.compareTo(value) < 0 && null != node.getLeft())
+			{
+					lock.release();
+					node = (BinarySearchTree)node.getLeft();
+					continue;
+					
+			}
+			else if(cValue.compareTo(value) > 0 && null != node.getRight())
+			{
+				lock.release();
+				node = (BinarySearchTree)node.getRight();
+				continue;
+			}
+			
+			lock.release();
 			return null;
-		}
+				
+			
+		} while(true);
+		
 	}
 
 	
@@ -136,9 +147,17 @@ public class BinarySearchTree<T extends Comparable > extends BinaryTree<T> {
 		return uncle;
 	}
 	
+	public Semaphore getLock()
+	{
+		return myLock;
+	}
+	
+	
 	/**
 	 * Parent node of this tree
 	 */
 	protected BinarySearchTree<T> myParent;
+	
+	private Semaphore myLock = new Semaphore(1,true);
 
 }

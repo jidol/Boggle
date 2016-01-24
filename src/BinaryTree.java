@@ -20,7 +20,7 @@ public class BinaryTree<T> {
 	 * 
 	 * @return New tree with the value within
 	 */
-	public BinaryTree<T> insert(T value)
+	public BinaryTree<T> insert(T value) throws InterruptedException
 	{
 		// Only insert new values
 		if(null == findNodeByValue(value))
@@ -61,6 +61,21 @@ public class BinaryTree<T> {
 	{
 		return myRight;
 	}
+	
+	public T getValue()
+	{
+		return myValue;
+	}
+	
+	public void setLeft(BinaryTree<T> element)
+	{
+		myLeft = element;
+	}
+	
+	public void setRight(BinaryTree<T> element)
+	{
+		myRight = element;
+	}
 
 	/**
 	 * Get the height of the tree
@@ -87,7 +102,7 @@ public class BinaryTree<T> {
 	 * @param value Value to locate
 	 * @return Node of the tree with Value within it otherwise null is returned
 	 */
-	public BinaryTree<T> findNodeByValue(T value)
+	public BinaryTree<T> findNodeByValue(T value) throws InterruptedException
 	{
 		if(value == myValue)
 		{
